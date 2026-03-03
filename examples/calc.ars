@@ -1,0 +1,49 @@
+use std::env;
+
+// Simple arithmetic "machines"
+fn add(a: i32, b: i32) -> i32 { a + b }
+fn sub(a: i32, b: i32) -> i32 { a - b }
+fn mul(a: i32, b: i32) -> i32 { a * b }
+fn div(a: i32, b: i32) -> i32 { a / b }
+
+fn main() {
+    // 1. Collect raw input from terminal arguments
+    env::args() -> collect -> args: Vec<String>;
+
+    // Basic safety check: expect [path, num1, op, num2]
+    if args.len() < 4 {
+        println!("Usage: calc <num1> <operator> <num2>");
+        println!("Operators: + , - , m (multiply) , d (divide)");
+        return;
+    }
+
+    // 2. Parse raw strings into integers using pipelines
+    args[1].parse::<i32>() -> unwrap -> n1;
+    args[3].parse::<i32>() -> unwrap -> n2;
+    
+    // 3. Routing logic (selecting the assembly line)
+    let op = &args[2];
+
+    if op == "+" { 
+        [n1, n2] +> add -> res; 
+        res -> println!("Result: {}"); 
+    }
+    
+    if op == "-" { 
+        [n1, n2] +> sub -> res; 
+        res -> println!("Result: {}"); 
+    }
+
+    if op == "m" { 
+        [n1, n2] +> mul -> res; 
+        res -> println!("Result: {}"); 
+    }
+
+    if op == "d" { 
+        [n1, n2] +> div -> res; 
+        res -> println!("Result: {}"); 
+    }
+
+    // 4. Factory cleanup: Explicitly drop the arguments vector
+    -args>;
+}
