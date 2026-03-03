@@ -1,17 +1,26 @@
 // Copyright (c) Bogdan Yachmenev (2026)
 // License: MIT
 
+use std::sync::atomic::{AtomicUsize, Ordering};
+
+static UNIQUE_ID: AtomicUsize = AtomicUsize::new(0);
+
+fn get_unique_name() -> String {
+    let id = UNIQUE_ID.fetch_add(1, Ordering::SeqCst);
+    format!("_flow_item_{}", id)
+}
+
 pub fn compile_arrow_line(input: &str) -> String {
     let trimmed = input.trim();
     if trimmed.is_empty() { return "\n".to_string(); }
 
     // --- 1. UTILIZER: -name> ---
     if trimmed.starts_with('-') && trimmed.contains('>') {
-        let name = trimmed[1..].split('>').next().unwrap_or("").trim();
+        let name = trimmed[1..].split('>').next().unwrap_or("").trim().trim_end_matches(';');
         return format!("drop({});\n", name);
     }
 
-    // --- 2. DEFINITIONS ---
+    // --- 2. DEFINITIONS & COMMENTS ---
     if trimmed.starts_with("fn ") || trimmed.starts_with("pub fn ") || trimmed.starts_with("//") {
         return format!("{}\n", trimmed);
     }
@@ -21,7 +30,7 @@ pub fn compile_arrow_line(input: &str) -> String {
         if let (Some(s), Some(e)) = (trimmed.find('<'), trimmed.find('>')) {
             let data = trimmed[..s].trim();
             let count = trimmed[s + 1..e].trim();
-            return format!("for idx in 0..{} {{ let it = {};\n", count, data);
+            return format!("for idx in 0..{} {{ #[allow(unused_variables)] let it = {};\n", count, data);
         }
     }
 
@@ -36,8 +45,11 @@ pub fn compile_arrow_line(input: &str) -> String {
             
             if arrow == "NULL" {
                 if !buffer.is_empty() {
-                    if is_var(&content) {
-                        emitted.push_str(&format!("let {} = {};", content, buffer));
+                    // Check if it's a variable assignment (including types like var: Type)
+                    if is_pure_variable(&content) {
+                        // Replace : with := for internal handling or just ensure let syntax
+                        let var_part = content.replace(":", " : ");
+                        emitted.push_str(&format!("let {} = {};", var_part, buffer));
                     } else {
                         emitted.push_str(&format!("{};", emit_final_call(&content, &buffer)));
                     }
@@ -50,7 +62,6 @@ pub fn compile_arrow_line(input: &str) -> String {
                     if buffer.is_empty() {
                         buffer = content; 
                     } else {
-                        // FIX: Correctly wrap nested calls
                         buffer = emit_final_call(&content, &buffer);
                     }
                 },
@@ -93,7 +104,6 @@ fn emit_final_call(func: &str, args: &str) -> String {
             format!("{}({})", f, args)
         }
     } else {
-        // FIX: Ensure nested functions don't produce func(args)(buffer)
         if f.contains('(') {
             let base = f.trim_end_matches(')');
             if base.ends_with('(') { format!("{}{})", base, args) } 
@@ -104,7 +114,19 @@ fn emit_final_call(func: &str, args: &str) -> String {
     }
 }
 
-fn is_var(s: &str) -> bool {
+fn is_pure_variable(s: &str) -> bool {
     let s = s.trim();
-    !s.contains('(') && !s.contains('!') && !s.contains('"') && !s.contains(' ') && !s.is_empty()
+    // A pure variable shouldn't contain parentheses, macros, or quotes
+    // But it CAN contain a colon for type specification (e.g., args: Vec<String>)
+    if s.contains('(') || s.contains('!') || s.contains('"') {
+        return false;
+    }
+    
+    // If it has spaces, it might be a multi-word expression (not a simple var)
+    // UNLESS it's a type definition with spaces like "name : Type"
+    if s.contains(' ') {
+        return s.contains(':');
+    }
+
+    !s.is_empty()
 }
