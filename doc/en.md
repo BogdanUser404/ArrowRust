@@ -1,4 +1,4 @@
-# 🏹 ArrowRust (ARS) Documentation
+# 🏹 ArrowRust (ARS) Documentation (I'll write it out of date before March 11)
 
 ArrowRust treats code as a directed flow of data. All preprocessor operators are expanded into standard Rust constructs during the transpilation phase.
 

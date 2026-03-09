@@ -1,0 +1,32 @@
+//#INCLUDE std/Base.rs
+//#ENABLE_MACRO
+//#DEFINE PROGNAME "Example №3 SafeString"
+//#DEFINE var let
+
+fn main(){
+    //Intialisation string
+    var mut string1: SafeString;
+    var mut string2: SafeString;
+    
+    Default::default() -> string1;
+    Default::default() -> string2;
+
+    var mut result: String;
+    String::new() -> result;
+    
+    string1.set_str("SafeString in ArrowRust works character by character and operates in UTF-32, which allows encoding any character, such as Cyrillic: оатгтааупшоп");
+    string2.set_str("Or even yumoji: 🦀 ✍ ➡ 🔛 🔹 🖥 💽 💾 🆒 🏖 💻 👩‍💻,🦀 👩‍💻");
+
+
+    repeat string1.len(){
+        result.push(string1[i])
+    }
+    result -> println!("Result: {}");
+    
+    String::new() -> result;
+    
+    repeat string2.len(){
+        result.push(string2[i])
+    }
+    result -> println!("Result: {}");
+}
