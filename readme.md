@@ -12,3 +12,12 @@ fn main() {
     "hello" -> String::from -> to_uppercase -> result;
     result -> println!("{}", arg1);
 }
+```
+2. Install arrowc
+
+```bash
+git clone https://github.com/BogdanUser404/ArrowRust
+cd ArrowRust
+python install.py #Only on linux/*nix
+```
+
