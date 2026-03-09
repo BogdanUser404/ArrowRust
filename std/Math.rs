@@ -78,7 +78,6 @@ impl u1024 {
     fn from_bit(bit: bool) -> Self { if bit { Self::ONE } else { Self::ZERO } }
 }
 
-// Реализация сдвигов для u1024 (аналогично предыдущему ответу)
 impl std::ops::Shl<u32> for u1024 {
     type Output = Self;
     fn shl(self, rhs: u32) -> Self {
