@@ -1,37 +1,97 @@
-# 🏹 ArrowRust (ARS) Documentation (I'll write it out of date before March 11)
+### Documentation for the ArrowRust Rust Dialect
 
-ArrowRust treats code as a directed flow of data. All preprocessor operators are expanded into standard Rust constructs during the transpilation phase.
+## Arrows
+ArrowRust uses arrows as the primary language operators. Schematically, they can be represented as:
+`arguments -> function() -> return`, but that's not all. The transpiler converts this into valid Rust code that runs just as well as native Rust.
 
-## Core Operators
+| Arrow  | Description                                      | Example                                              |
+|--------|--------------------------------------------------|------------------------------------------------------|
+| `+>`   | Passes multiple arguments to a function          | `[arg1, arg2] +> function()`                         |
+| `->`   | Passes a value to a function or to a variable    | `function() -> var1 -> function2()`                  |
+| `-variable->` | Deinitializes a variable (drop)               | `-variable->`                                         |
+| `mv->` | Works like `->`, but also drops the value        | `variable mv-> function()`                            |
+| `!->`  | Analogous to `.expect("text")` as an arrow       | `function() !-> "Error message"`                      |
+| `->\|` | Analogous to `break` in Rust                     | `while true { println!("text"); ->\| }`               |
+| `->^`  | Analogous to `continue` in Rust                  | `while true { println!("Hello!"); if true { ->^ } }`  |
+| `->()` | Returns an empty tuple from a function           | `->()`                                                 |
+| `&->`  | Works like `->` but passes a reference           | `variable &-> function()`                              |
 
-### 1. Transporter (`->`)
-Passes ownership of data to the next node.
-- `data -> func` => `func(data)`
-- `data -> var;` => `let var = data;`
+## New Keywords
+- `pass` – does nothing, literally becomes a comment.
+- `import std;` – imports basic features from Rust's standard library.
+- `tuple name (tuple)` – a wrapper over tuple structs.
+- `customtype name type` – a wrapper over `type` aliases.
 
-### 2. Sensor (`<-&`)
-Passes an immutable reference. The original data remains owned by the caller.
-- `data <-& func` => `func(&data)`
+## Loops
+ArrowRust introduces two new loops: `repeat` and `enumeration`.
 
-### 3. Assembler (`+>`)
-Unpacks an array or tuple into function arguments.
-- `[a, b] +> func` => `func(a, b)`
+### Repeat
+```rust
+repeat count as where_to_put_index { // where_to_put_index is optional, defaults to i
+    // code
+}
+```
+Infinite loop variant:
 
-### 4. Replicator (`<n>`)
-Creates a loop with `n` iterations.
-- Syntax: `data <n> { ... }`
-- Internal variables:
-  - `it`: the input data.
-  - `idx`: current iteration index (0..n).
+```rust
+repeat {
+    // code
+}
+```
+Enumeration
+A built-in loop for iterating over types that support the Index trait and have a .len() method.
 
-### 5. Utilizer (`-x>`)
-Explicitly terminates an object's lifetime.
-- `-my_var>` => `drop(my_var);`
+```rust
+enumeration from variable1 to variable2 {
+    // code
+}
+```
+### Standard Library (STD)
+ArrowRust provides a set of ready-to-use modules for common tasks:
 
-## Command Line Interface
+std/Base.rs – for working with safe types and the dynamic Value type.
 
-- `-f <path>`: Process a specific file.
-- `-o <path>`: Specify output `.rs` file name.
-- `-fwf <path>`: Folder-Wide-Factory mode (processes all `.ars` files in a directory).
-- `-b`: Invoke `rustc` to build a binary.
-- `-t`: Transpilation mode (code generation only, default).
+std/Random.rs – for generating random characters and numbers.
+
+std/Bits.rs – for bitwise operations (setting/reading a specific bit).
+
+std/Terminal.rs – for color and terminal manipulation.
+
+### std/Base
+New types:
+
+ - SafeString – stores strings as a vector of char instead of a byte sequence.
+
+ - SafeVector – a dynamically growing array without strict typing.
+
+ - Value – a type that can hold other types.
+
+ - SafeString and SafeVector provide the usual functionality of strings and vectors, respectively.
+
+ - Value can contain:
+
+ - integers: i8–i128, u8–u128
+
+ - floats: f32, f64
+
+ - Vec<u8>
+
+ - String
+
+ - char
+
+ - bool
+
+ - None
+
+Value::None is a character (char) used for error handling and zeroing out data. It is recommended to use the following five basic values:
+
+- '\0' – zeroing bytes and returning “nothing”.
+
+- 'r' – read error.
+
+- 'b' – corrupt data.
+
+- 's' – success but nothing to return.
+
+Other values are free for custom codes.

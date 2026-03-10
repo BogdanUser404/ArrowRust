@@ -1,0 +1,20 @@
+//#INCLUDE std/Base.rs
+//#INCLUDE std/Random.rs
+//#ENABLE_MACRO
+//#DEFINE varm let mut
+//#DEFINE var let
+//#DEFINE PROGNAME "Example №3 Random module"
+
+fn main(){
+	varm output: SafeString = SafeString::new();
+
+	PROGNAME -> println!();
+	repeat 100 as _{
+		var str: String;
+		format!("{}", random_char()) -> str;
+		var s: &str;
+		str -> as_str() -> s;
+		output.push_str(s);
+	}
+	format!("100 random symbols: {}", output) -> println!("{}");
+}

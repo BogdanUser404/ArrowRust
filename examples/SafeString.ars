@@ -4,29 +4,27 @@
 //#DEFINE var let
 
 fn main(){
-    //Intialisation string
+    //Declarate strings
     var mut string1: SafeString;
     var mut string2: SafeString;
-    
-    Default::default() -> string1;
-    Default::default() -> string2;
-
     var mut result: String;
+    //Initialisation String
     String::new() -> result;
-    
-    string1.set_str("SafeString in ArrowRust works character by character and operates in UTF-32, which allows encoding any character, such as Cyrillic: оатгтааупшоп");
-    string2.set_str("Or even yumoji: 🦀 ✍ ➡ 🔛 🔹 🖥 💽 💾 🆒 🏖 💻 👩‍💻,🦀 👩‍💻");
+    SafeString::from("SafeString in ArrowRust works character by character and operates in UTF-32, which allows encoding any character, such as Cyrillic: оатгтааупшоп") -> string1;
+    SafeString::from("Or even yumoji: 🦀 ✍ ➡ 🔛 🔹 🖥 💽 💾 🆒 🏖 💻 👩‍💻,🦀 👩‍💻") -> string2;
 
-
+    //Iterating over strings by characters
     repeat string1.len(){
-        result.push(string1[i])
+        result.push(string1[i]);
     }
+    //Print result and cleaning strings
     result -> println!("Result: {}");
-    
+    -string1>;
     String::new() -> result;
     
     repeat string2.len(){
         result.push(string2[i])
     }
+    //Print result
     result -> println!("Result: {}");
 }

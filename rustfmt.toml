@@ -1,0 +1,6 @@
+# rustfmt.toml
+tab_spaces = 8
+max_width = 100
+hard_tabs = true          # использовать табуляцию вместо пробелов
+wrap_comments = true      # переносить комментарии
+edition = "2024"
