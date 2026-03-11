@@ -2,10 +2,31 @@
 // Copyright (c) Bogdan Yachmenev (2026)
 // License: MIT
 // Version: 0.2.8 (all slices via .get(), no panics)
+//
+// Refactored: functions grouped by responsibility, comments added.
 
 use std::sync::atomic::{AtomicBool, Ordering};
 
+/// Type of arrow operator (for future use, not yet integrated).
+#[derive(Debug, PartialEq, Eq)]
+enum ArrowType {
+	Single,     // ->
+	Multi,      // +>
+	Expect,     // !->
+	Ref,        // &->
+	Move,       // mv->
+	Break,      // ->|
+	Continue,   // ->^
+	ReturnUnit, // ->()
+	Clone,      // cp->
+	None,       // not an arrow
+}
+
 static IGNORE_MODE: AtomicBool = AtomicBool::new(false);
+
+// ============================================================================
+// Main entry point
+// ============================================================================
 
 pub fn transpile_line(line: &str) -> String {
 	let trimmed = line.trim();
@@ -32,6 +53,9 @@ pub fn transpile_line(line: &str) -> String {
 
 	if code == "pass" {
 		return format!("{}// pass\n", " ".repeat(indent));
+	}
+	if code == "TODO" {
+		return format!("{} //TODO \n", " ".repeat(indent));
 	}
 
 	if code == "import std;" {
@@ -101,7 +125,6 @@ pub fn transpile_line(line: &str) -> String {
 	let processed = match () {
 		_ if should_skip(&clean_current) => clean_current.to_string(),
 		_ if is_utilizer(&clean_current) => handle_utilizer(&clean_current),
-		// --- enumeration loop (исправлено ключевое слово) ---
 		_ if clean_current.starts_with("enumeration from") => {
 			handle_enumeration(&clean_current, indent)
 		}
@@ -109,7 +132,8 @@ pub fn transpile_line(line: &str) -> String {
 		_ if has_pipeline(&clean_current) => {
 			let res = handle_pipeline(&clean_current);
 			if !has_semicolon
-				&& !res.contains('=') && !res.is_empty()
+				&& !res.contains('=')
+				&& !res.is_empty()
 				&& !["break", "continue", "return", "let", "match", "{", "drop"]
 					.iter()
 					.any(|&x| res.starts_with(x))
@@ -130,7 +154,11 @@ pub fn transpile_line(line: &str) -> String {
 	format!("{}{}{}{}\n", " ".repeat(indent), processed, suffix, comment)
 }
 
-// --- Replace `ident.cp->` with `ident.clone()` (safe, using char_indices, slices via .get()) ---
+// ============================================================================
+// Arrow and pipeline handling
+// ============================================================================
+
+/// Replace `ident.cp->` with `ident.clone()`.
 fn replace_cp_arrow(s: &str) -> String {
 	let mut result = String::with_capacity(s.len());
 	let mut chars = s.char_indices().peekable();
@@ -162,19 +190,13 @@ fn replace_cp_arrow(s: &str) -> String {
 							let mut after_minus = after_p.clone();
 							after_minus.next();
 							if let Some((_, '>')) = after_minus.peek() {
-								result.push_str(
-									s.get(last..start)
-										.unwrap_or(""),
-								);
+								result.push_str(s.get(last..start).unwrap_or(""));
 								result.push_str(ident);
 								result.push_str(".clone()");
 								for _ in 0..5 {
 									chars.next();
 								}
-								last = chars
-									.peek()
-									.map(|&(pos, _)| pos)
-									.unwrap_or(s.len());
+								last = chars.peek().map(|&(pos, _)| pos).unwrap_or(s.len());
 								continue;
 							}
 						}
@@ -189,42 +211,25 @@ fn replace_cp_arrow(s: &str) -> String {
 	result
 }
 
-// --- Helper functions ---
-fn should_skip(s: &str) -> bool {
-	if s.starts_with("fn ")
-		|| s.starts_with("pub fn ")
-		|| s.starts_with("use ")
-		|| s.starts_with("extern ")
-		|| s.starts_with("mod ")
-		|| s.starts_with("unsafe")
-		|| s.starts_with("impl ")
-		|| s.starts_with("pub impl ")
-		|| s.starts_with("struct ")
-		|| s.starts_with("enum ")
-		|| s.starts_with("trait ")
-	{
-		return true;
-	}
-	let p = ["if ", "else ", "match ", "while ", "for ", "loop "];
-	p.iter().any(|&x| s.starts_with(x)) && !has_pipeline(s)
-}
-
+/// Check if a string is a utilizer (starts with '-', contains '>', not "->").
 fn is_utilizer(s: &str) -> bool {
 	s.starts_with('-') && !s.starts_with("->") && s.contains('>')
 }
 
+/// Handle a utilizer expression (e.g., `-variable>`).
+fn handle_utilizer(s: &str) -> String {
+	let id = s[1..].split('>').next().unwrap_or("").trim();
+	format!("drop({})", id)
+}
+
+/// Check if a string contains any pipeline arrow.
 fn has_pipeline(s: &str) -> bool {
 	["->", "+>", "!->", "&->", "mv->"]
 		.iter()
 		.any(|&a| s.contains(a))
 }
 
-fn handle_utilizer(s: &str) -> String {
-	let id = s[1..].split('>').next().unwrap_or("").trim();
-	format!("drop({})", id)
-}
-
-// --- Pipeline with all slices via .get() ---
+/// Main pipeline handler.
 fn handle_pipeline(s: &str) -> String {
 	let mut current = s.to_string();
 	let mut acc = String::new();
@@ -315,8 +320,7 @@ fn handle_pipeline(s: &str) -> String {
 			"+>" => {
 				let inner = content.trim_matches(|c| c == '[' || c == ']');
 				if s.contains("set_bit") {
-					let p: Vec<&str> =
-						inner.split(',').map(|x| x.trim()).collect();
+					let p: Vec<&str> = inner.split(',').map(|x| x.trim()).collect();
 					if p.len() == 3 {
 						let var_clean = p[0].replace('&', "");
 						acc = format!(
@@ -347,9 +351,12 @@ fn handle_pipeline(s: &str) -> String {
 						content = content.trim().to_string();
 					}
 				}
-				let is_identifier = !content.is_empty()
-					&& content.chars().all(|c| c.is_alphanumeric() || c == '_');
-				if is_identifier && target.is_empty() {
+				// Check if content is a valid assignment target.
+				let is_lvalue = !content.is_empty()
+					&& (content.chars().all(|c| c.is_alphanumeric() || c == '_')
+						|| content.contains('[')
+						|| content.contains('.'));
+				if is_lvalue && target.is_empty() {
 					let res = if acc.is_empty() {
 						content
 					} else {
@@ -388,6 +395,46 @@ fn handle_pipeline(s: &str) -> String {
 	format!("{}{}", target, acc)
 }
 
+/// Parse the next arrow in the pipeline.
+/// Returns (content before arrow, arrow string) or (input, "NONE") if none.
+fn parse_step(input: &str) -> (String, String) {
+	let arrows = ["->|", "->^", "->()", "!->", "&->", "mv->", "+>", "->"];
+	for a in arrows {
+		if let Some(p) = input.find(a) {
+			if let Some(part) = input.get(..p) {
+				return (part.trim().to_string(), a.to_string());
+			}
+		}
+	}
+	(input.to_string(), "NONE".to_string())
+}
+
+/// (Reserved for future use) Detect arrow type and length.
+fn is_arrow(s: &str) -> (Option<ArrowType>, usize) {
+	let arrows = [
+		("->|", ArrowType::Break),
+		("->^", ArrowType::Continue),
+		("->()", ArrowType::ReturnUnit),
+		("!->", ArrowType::Expect),
+		("&->", ArrowType::Ref),
+		("mv->", ArrowType::Move),
+		("+>", ArrowType::Multi),
+		("->", ArrowType::Single),
+		("cp->", ArrowType::Clone),
+	];
+	for (pat, ty) in arrows {
+		if let Some(pos) = s.find(pat) {
+			return (Some(ty), pat.len());
+		}
+	}
+	(None, 0)
+}
+
+// ============================================================================
+// Function call formatting
+// ============================================================================
+
+/// Wrap a function call with arguments.
 fn wrap_call(f: &str, args: &str) -> String {
 	let f = f.trim();
 	if f.is_empty() || f == "set_bit" {
@@ -395,7 +442,7 @@ fn wrap_call(f: &str, args: &str) -> String {
 	}
 
 	if f.ends_with('!') {
-		// Output macros require a format string
+		// Output macros require a format string.
 		if f == "println!" || f == "print!" || f == "format!" {
 			return format!("{}(\"{{}}\", {})", f, args);
 		}
@@ -403,27 +450,39 @@ fn wrap_call(f: &str, args: &str) -> String {
 	}
 
 	let rust_methods = [
-		"unwrap",
-		"collect",
-		"parse",
-		"trim",
-		"to_string",
-		"len",
-		"as_str",
-		"expect",
-		"insert",
-		"push",
+		"unwrap", "collect", "parse", "trim", "to_string", "len",
+		"as_str", "expect", "insert", "push", "to_value",
 	];
-	if rust_methods.iter().any(|&m| f.contains(m)) {
-		if f.contains('(') {
-			format!("{}.{}", args, f)
-		} else {
-			format!("{}.{}()", args, f)
-		}
-	} else {
+	// Exact match required – no accidental substring matches.
+	if rust_methods.iter().any(|&m| f == m) {
+		// Plain method name – call it on args.
+		format!("{}.{}()", args, f)
+	} else if f.contains('(') {
+		// f already looks like a function call with arguments.
 		format_standard_call(f, args)
+	} else {
+		// Assume plain function name.
+		format!("{}({})", f, args)
 	}
 }
+
+/// Standard function call formatting (e.g., `func(arg1, arg2)`).
+fn format_standard_call(f: &str, args: &str) -> String {
+	if f.contains("arg1") {
+		return f.replace("arg1", args);
+	}
+	if let Some(p) = f.rfind(')') {
+		let head = f.get(..p).unwrap_or("").trim();
+		let sep = if head.ends_with('(') { "" } else { ", " };
+		format!("{}{}{})", head, sep, args)
+	} else {
+		format!("{}({})", f, args)
+	}
+}
+
+// ============================================================================
+// Special declarations (tuple, customtype, dict, input)
+// ============================================================================
 
 fn handle_tuple_decl(s: &str) -> String {
 	let mut content = s.get("tuple ".len()..).unwrap_or("").trim().to_string();
@@ -504,6 +563,11 @@ fn handle_dict_init(s: &str) -> String {
 	}
 }
 
+// ============================================================================
+// Loop constructs
+// ============================================================================
+
+/// Handle `repeat` loop syntax.
 fn handle_repeat(s: &str) -> String {
 	let body = s["repeat ".len()..].trim();
 	if body.is_empty() || body == "{" {
@@ -518,13 +582,13 @@ fn handle_repeat(s: &str) -> String {
 	format!("for {} in 0..{} {}", var, expr, brace)
 }
 
-/// Handles the `enumeration` loop syntax (построчная генерация).
-/// Синтаксис: `enumeration from <expr> to <var> {`
-/// Генерирует:
+/// Handle `enumeration` loop syntax.
+/// Syntax: `enumeration from <expr> to <var> {`
+/// Generates:
 ///   let mut <var>;
 ///   for i in 0..<expr>.len() {
 ///       <var> = <expr>[i];
-/// (открывающая скобка уже включена, тело и закрывающая скобка идут позже)
+/// (opening brace already included, body and closing brace follow later)
 fn handle_enumeration(s: &str, indent: usize) -> String {
 	let trimmed = s.trim();
 	if !trimmed.starts_with("enumeration from") {
@@ -543,35 +607,35 @@ fn handle_enumeration(s: &str, indent: usize) -> String {
 	};
 	let var = after_to[..brace_pos].trim();
 	let outer_indent = " ".repeat(indent);
-	let inner_indent = " ".repeat(indent + 8); // предполагаем стандартный отступ в 8 пробелов
+	let inner_indent = " ".repeat(indent + 4); // assume 4-space inner indent
 	format!(
 		"{}let mut {};\n{}for i in 0..{}.len() {{\n{}{} = {}[i];",
-		outer_indent, var, outer_indent, expr, inner_indent, var, expr
+		outer_indent, var,
+		outer_indent, expr,
+		inner_indent, var, expr
 	)
 }
 
-fn format_standard_call(f: &str, args: &str) -> String {
-	if f.contains("arg1") {
-		return f.replace("arg1", args);
-	}
-	if let Some(p) = f.rfind(')') {
-		let head = f.get(..p).unwrap_or("").trim();
-		let sep = if head.ends_with('(') { "" } else { ", " };
-		format!("{}{}{})", head, sep, args)
-	} else {
-		format!("{}({})", f, args)
-	}
-}
+// ============================================================================
+// General helpers
+// ============================================================================
 
-// --- Find arrow with safe slice ---
-fn parse_step(input: &str) -> (String, String) {
-	let arrows = ["->|", "->^", "->()", "!->", "&->", "mv->", "+>", "->"];
-	for a in arrows {
-		if let Some(p) = input.find(a) {
-			if let Some(part) = input.get(..p) {
-				return (part.trim().to_string(), a.to_string());
-			}
-		}
+/// Determine if a line should be skipped from pipeline processing.
+fn should_skip(s: &str) -> bool {
+	if s.starts_with("fn ")
+		|| s.starts_with("pub fn ")
+		|| s.starts_with("use ")
+		|| s.starts_with("extern ")
+		|| s.starts_with("mod ")
+		|| s.starts_with("unsafe")
+		|| s.starts_with("impl ")
+		|| s.starts_with("pub impl ")
+		|| s.starts_with("struct ")
+		|| s.starts_with("enum ")
+		|| s.starts_with("trait ")
+	{
+		return true;
 	}
-	(input.to_string(), "NONE".to_string())
+	let p = ["if ", "else ", "match ", "while ", "for ", "loop "];
+	p.iter().any(|&x| s.starts_with(x)) && !has_pipeline(s)
 }

@@ -1,0 +1,6 @@
+//#DEFINE do {
+//#DEFINE then{
+//#DEFINE end }
+//#DEFINE function fn
+//#DEFINE print println!
+//#DEFINE nil Value::None('\0')

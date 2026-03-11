@@ -1,0 +1,7 @@
+//#DEFINE do {
+//#DEFINE then{
+//#DEFINE end }
+//#DEFINE funсtion fn
+//#DEFINE print println!
+//#DEFINE nil Value::None('\0')
+//#DEFINE times repeat

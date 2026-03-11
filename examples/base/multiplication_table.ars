@@ -1,0 +1,24 @@
+//#ENABLE_MACRO
+//#DEFINE PROGNAME "Example №2 multiplication table"
+
+fn print_row(i: i32) {
+	repeat 16 as j{
+        	if j == 0 {
+			->^
+		}
+		i * j -> println!("{i} * {j} = {}")
+	}
+}
+
+fn main(){
+	PROGNAME -> println!()
+	repeat 11 as i{ЪХ
+        	if i == 0 {
+			->^
+		}
+        	println!("======={i}=======")
+        	print_row(i)
+    	}
+
+    	println!("End: {}", PROGNAME)
+}

@@ -17,10 +17,12 @@ ArrowRust uses arrows as the primary language operators. Schematically, they can
 | `&->`  | Works like `->` but passes a reference           | `variable &-> function()`                              |
 
 ## New Keywords
-- `pass` – does nothing, literally becomes a comment.
+- `pass` – does nothing, used to mark intentionally empty code branches
+- `TODO` – does nothing, used to mark illegal code.
 - `import std;` – imports basic features from Rust's standard library.
 - `tuple name (tuple)` – a wrapper over tuple structs.
 - `customtype name type` – a wrapper over `type` aliases.
+- `var` - Built-in macro that is replaced by `let mut`
 
 ## Loops
 ArrowRust introduces two new loops: `repeat` and `enumeration`.

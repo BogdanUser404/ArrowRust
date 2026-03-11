@@ -1,0 +1,21 @@
+//#ENABLE_MACRO
+//#INCLUDE std/styles/Pascal.ars
+
+PROGRAM BEGIN
+	VAR arr;
+	[64, 34, 25, 12, 22, 11, 90, 5, 77, 30] -> arr;
+	REPEAT (arr.len() - 1) as pass
+	BEGIN
+		enumeration from arr to elem BEGIN
+			if i < arr.len() - 1 BEGIN
+				if elem > arr[i + 1 as usize] BEGIN
+					VAR temp: i64;
+					arr[i] -> temp;
+					arr[i + 1 as usize] -> arr[i];
+					temp -> arr[i + 1 as usize];
+				END
+			END
+		END
+	END
+	arr -> print("Sorted array: {:?}");
+END

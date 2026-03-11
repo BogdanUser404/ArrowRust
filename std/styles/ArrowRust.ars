@@ -1,0 +1,35 @@
+//#DEFINE print println!
+//#DEFINE func fn
+//#DEFINE ): ) ->
+//#DEFINE elif else if
+//#DEFINE => .to_value() ->
+
+//#DEFINE errprint eprintln!
+//#DEFINE print println!
+
+//#DEFINE Null Value::None('\0')
+//#DEFINE BROKEN_DATA Value::None('b')
+//#DEFINE READING_ERROR Value::None('r')
+//#DEFINE SUCCESFULL Value::None('s')
+
+//#DEFINE CL_BLACK "\x1b[30m"
+//#DEFINE CL_RED "\x1b[31m"
+//#DEFINE CL_GREEN "\x1b[32m"
+//#DEFINE CL_YELLOW "\x1b[33m"
+//#DEFINE CL_BLUE "\x1b[34m"
+//#DEFINE CL_MAGENTA "\x1b[35m"
+//#DEFINE CL_CYAN "\x1b[36m"
+//#DEFINE CL_WHITE "\x1b[37m"
+
+//#DEFINE CL_B_BLACK "\x1b[90m"
+//#DEFINE CL_B_RED "\x1b[91m"
+//#DEFINE CL_B_GREEN "\x1b[92m"
+//#DEFINE CL_B_YELLOW "\x1b[93m"
+//#DEFINE CL_B_BLUE "\x1b[94m"
+//#DEFINE CL_B_MAGENTA "\x1b[95m"
+//#DEFINE CL_B_CYAN "\x1b[96m"
+//#DEFINE CL_B_WHITE "\x1b[97m"
+
+//#DEFINE CL_RESET "\x1b[0m"      
+//#DEFINE CL_BOLD "\x1b[1m"         
+//#DEFINE CL_UNDERLINE "\x1b[4m" 

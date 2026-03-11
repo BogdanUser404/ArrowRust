@@ -1,0 +1,20 @@
+//#ENABLE_MACRO
+//#DEFINE BEGIN {
+//#DEFINE END }
+//#DEFINE print println!
+//#DEFINE PROGRAMM fn
+//#DEFINE MACRO_EXAMPLE main()
+//#DEFINE PROGNAME "Example №5 Macro using"
+//#NO_SPACE
+
+PROGRAMM MACRO_EXAMPLE BEGIN
+	"Hello,World!" -> print();
+
+	repeat 100 as index BEGIN
+                index -> print("Iteration: {}");
+	END
+	PROGNAME -> print("End: {}");
+END
+
+
+

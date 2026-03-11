@@ -58,12 +58,12 @@ pub enum Value {
 impl Value{
 	pub const NONE: char = '\0';
 	pub const ERR_READ: char = 'r';
-	pub const ERR_ENCODING: char = 'c';	
+	pub const ERR_ENCODING: char = 'c';
 	pub const ERR_BAD_DATA: char = 'b';
 	pub const OK_NO_DATA: char = 's';
 
 	pub fn is_none(&self) -> bool {
-		matches!(self, Value::None)
+		matches!(self, Value::None('\0'))
 	}
 
 }
@@ -130,7 +130,7 @@ impl ToValue for i64 {
 }
 impl ToValue for i128 {
 	fn to_value(self) -> Value {
-		Value::i128(Box::new(self))
+		Value::I128(Box::new(self))
 	}
 }
 impl ToValue for isize {
@@ -301,9 +301,9 @@ impl SafeString {
 
 	pub fn get_symbol(&self, index: u64) -> Result<char, OpStatus> {
 		self.content
-			.get(index as usize)
-			.copied()
-			.ok_or(OpStatus::IndexError)
+		.get(index as usize)
+		.copied()
+		.ok_or(OpStatus::IndexError)
 	}
 
 	pub fn set_symbol(&mut self, index: u64, symbol: char) -> Result<(), OpStatus> {
@@ -410,19 +410,20 @@ impl SafeVector {
 		self.content.clear();
 	}
 
-	pub fn get(&self, index: u64) -> Value {
-		if index > self.content.len() + 1{
-			for i in self.content.len() + 1 - index{
+	pub fn get(&mut self, index: u64) -> Value {
+		if index as usize > self.content.len(){
+			for _ in 0 .. self.content.len() - index as usize{
 				self.content.push(Value::None('\0'));
 			}
 			return Value::None('\0');
 		}
-		self.content[index as usize]
+		let returned = self.content.get(index as usize).expect("Error geting value");
+		return returned.clone();
 	}
 
-	pub fn set(&self, index: u64, value: Value){
-		if index > self.content.len() + 1{
-			for i in self.content.len() + 1 - index{
+	pub fn set(&mut self, index: u64, value: Value){
+		if index as usize > self.content.len(){
+			for i in 0 .. self.content.len() - index as usize{
 				self.content.push(Value::None('\0'));
 			}
 			self.content[index as usize] = value;
@@ -524,3 +525,4 @@ impl AsRef<[Value]> for SafeVector {
 	}
 }
 //#ARROW_NO_IGNORE
+

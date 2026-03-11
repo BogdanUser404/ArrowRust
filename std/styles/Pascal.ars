@@ -1,0 +1,13 @@
+//#ENABLE_MACRO
+//#DEFINE BEGIN {
+//#DEFINE END }
+//#DEFINE print println!
+//#DEFINE FUCNTION fn
+//#DEFINE PROCEDURE fn
+//#DEFINE Exit Return
+//#DEFINE PROGRAM fn main()
+//#DEFINE WHILE while
+//#DEFINE REPEAT repeat
+//#DEFINE FOR for
+//#DEFINE ): ) ->
+//#DEFINE VAR let mut
