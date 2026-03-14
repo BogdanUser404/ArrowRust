@@ -77,5 +77,6 @@ arrow_path = input("How dir use for libs? enter in format /path/to/dir \n");
 print_step("Copying std");
 os.system(f"sudo mkdir -p {arrow_path}/std");
 os.system(f'sudo cp -RT std/ "{arrow_path}/std"');
+os.system(f"sudo cp ArrowRust.nanorc /usr/share/nano/ArrowRust.nanorc")
 
 print_warning("Set $ARROWPATH manually for your shell based on the path you entered.");
