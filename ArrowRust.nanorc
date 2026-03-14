@@ -1,0 +1,40 @@
+## ArrowRust Syntax Highlighting for Nano
+syntax "arrowrust" "\.(arow|ars|ar|rs)$"
+
+## Strings
+color yellow ""(\\.|[^"])*""
+
+##[] +> syntax:
+color brightblue "\[[^]]*\]"
+
+
+## Comments
+color brightblack "//.*"
+color brightblack start="/\*" end="\*/"
+
+## ArrowRust & Rust Keywords
+color brightgreen "\<(let|var|fn|struct|tuple|customtype|pass|TODO|import|std|as|from|to|enum|type|mut)\>"
+color brightyellow "\<(if|else|while|for|repeat|enumeration|return|match|in|loop|break|continue)\>"
+
+## Common Rust Types & Values
+color cyan "\<(i8|i16|i32|i64|i128|u8|u16|u32|u64|u128|f32|f64|str|String|bool|Option|Result|Vec|true|false|None|Some|Self|self)\>"
+
+## Special Arrow Constructions (Longest/Specific first)color magenta "(\!->|&->|\+>|mv->|cp>|->\||->\^|->\(\))"
+color brightblue "\[[^]]*\]"
+
+## Dynamic Variable Drop: -variable->
+color magenta "-[[:alnum:]_]+->"
+
+## Base Arrow
+color magenta "->"
+
+## Numbers
+color brightblue "\<[0-9]+(\.[0-9]+)?\>"
+
+## Visual Alerts for Marks
+color white,red "\<TODO\>"
+color white,blue "\<pass\>"
+
+## Function Calls (Words before parenthesis)
+color blue "[[:alnum:]_]+[[:space:]]*\("
+color magenta "\("
