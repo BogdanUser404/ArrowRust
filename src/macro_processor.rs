@@ -1,4 +1,5 @@
-// macro_processor.rs
+// Copyright (c) Bogdan Yachmenev (2026)
+
 use std::collections::{HashMap, HashSet};
 use std::fs;
 
