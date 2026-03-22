@@ -1,8 +1,14 @@
+/* 
+ * (C) 2026 Bogdan Yachmenev
+ * Licensed under MIT License (https://mit-license.org)
+ * These macros are part of the [styles/ArrowRust] Standard Library.
+ */
+
 //#DEFINE print println!
 //#DEFINE func fn
 //#DEFINE ): ) ->
 //#DEFINE elif else if
-//#DEFINE => .to_value() ->
+//#DEFINE => -> to_value() ->
 
 //#DEFINE errprint eprintln!
 //#DEFINE print println!
