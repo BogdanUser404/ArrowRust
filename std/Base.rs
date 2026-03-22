@@ -1,7 +1,6 @@
-// std/Base.rs
-// Базовая стандартная библиотека ArrowRust
-// Содержит основные типы: Value, OpStatus, ToValue, Dict, SafeString, SafeVector
-// Битовые операции вынесены в отдельный модуль bit_ops.rs
+// (C) 2026 Bogdan Yachmenev
+// This file is part of [Base] Standard Library.
+// Licensed under MIT License (https://mit-license.org/)
 //#ARROW_IGNORE
 use std::fmt;
 use std::iter::FromIterator;
