@@ -1,9 +1,4 @@
-// transpiler.rs
 // Copyright (c) Bogdan Yachmenev (2026)
-// License: MIT
-// Version: 0.2.8 (all slices via .get(), no panics)
-//
-// Refactored: functions grouped by responsibility, comments added.
 
 use std::sync::atomic::{AtomicBool, Ordering};
 
