@@ -1,3 +1,9 @@
+/* 
+ * (C) 2026 Bogdan Yachmenev
+ * Licensed under MIT License (https://mit-license.org)
+ * These macros are part of the [styles/Pascal] Standard Library.
+ */
+
 //#ENABLE_MACRO
 //#DEFINE BEGIN {
 //#DEFINE END }
