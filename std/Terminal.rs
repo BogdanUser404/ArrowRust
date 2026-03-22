@@ -1,9 +1,9 @@
 //#ARROW_IGNORE
-/*
-    ArrowRust Terminal Module
-    Provides RGB colors, cursor manipulation, and screen control.
-    Writing this at 4 AM is the only way to ensure it works.
-*/
+/* 
+ * (C) 2026 Bogdan Yachmenev
+ * Licensed under MIT License (https://mit-license.org)
+ * These file are part of the [Terminal] Standard Library.
+ */
 
 use std::io::{Write, stdout};
 
