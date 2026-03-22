@@ -1,3 +1,5 @@
+// Copyright (c) Bogdan Yachmenev (2026)
+
 use std::{env, fs, path::Path, process::Command};
 pub mod macro_processor;
 pub mod transpliter;
