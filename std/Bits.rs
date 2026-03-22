@@ -1,6 +1,7 @@
-// std/bit_ops.rs
-// Модуль для побитовых операций над Value
-// Требует наличия Base.rs (Value, OpStatus)
+// (C) 2026 Bogdan Yachmenev
+// This file is part of [Bits] Standard Library.
+// Licensed under MIT License (https://mit-license.org/)
+
 
 use crate::base::{OpStatus, Value};
 
