@@ -1,3 +1,9 @@
+/* 
+ * (C) 2026 Bogdan Yachmenev
+ * Licensed under MIT License (https://mit-license.org)
+ * These file are part of the [Random] Standard Library.
+ */
+
 //#ARROW_IGNORE
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::mem::MaybeUninit;
