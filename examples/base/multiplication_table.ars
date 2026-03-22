@@ -6,19 +6,19 @@ fn print_row(i: i32) {
         	if j == 0 {
 			->^
 		}
-		i * j -> println!("{i} * {j} = {}")
+		i * j -> println!("{i} * {j} = {}");
 	}
 }
 
 fn main(){
-	PROGNAME -> println!()
-	repeat 11 as i{ЪХ
+	PROGNAME -> println!();
+	repeat 11 as i{
         	if i == 0 {
 			->^
 		}
-        	println!("======={i}=======")
-        	print_row(i)
+        	i -> println!("======={}=======");
+        	i -> print_row();
     	}
 
-    	println!("End: {}", PROGNAME)
+    	PROGNAME -> println!("End: {}");
 }
