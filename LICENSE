@@ -1,25 +1,50 @@
+BY-License v1.0
 Copyright (c) 2026 Bogdan Yachmenev
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions.
 
-1. The above copyright notice and this permission notice shall be included in 
-   all copies or substantial portions of the Software.
+1. Preservation of Notices
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-2. ETHICAL RESTRICTIONS:
-   a) AI TRAINING: Any use of this software for training or fine-tuning neural 
-      networks requires the public disclosure of the resulting model weights.
-   b) MILITARY USE: Any use of this software for military purposes requires 
-      the public disclosure of the entire encompassing system's source code.
+2. Definitions
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+- "Military Use" means any use of the Software, directly or indirectly:
+  (a) in weapons, ammunition, ordnance, weapon systems, or systems designed for their development, production, or maintenance;
+  (b) for the training, instruction, or preparation of personnel of armed forces, private military companies, intelligence agencies, or other state paramilitary entities;
+  (c) in equipment, gear, communications, navigation, or logistics intended for such personnel.
+
+- "AI Training" means the process of using the Software (including its source code, object code, outputs, or any data derived from it) as part of a training, validation, or fine-tuning dataset to create, train, or improve a machine learning model, neural network, or other artificial intelligence system.
+
+- "Model Weights" means the parameters, weights, biases, and other mathematical values that result from AI Training and that determine the behavior of the resulting artificial intelligence system.
+
+- "Licensor" means Bogdan Yachmenev, the copyright holder of the Software.
+
+3. Additional Restrictions
+
+3.1 Military Use Restriction
+If the Software is used for Military Use, the entire encompassing system (including any software, firmware, or hardware design that integrates or depends on the Software) must be made publicly available in source code form under the terms of BY-License v1.0.
+
+3.2 AI Training and Model Weights Disclosure
+If the Software is used for AI Training, and the Software or any portion of it is included in the training data, then the resulting Model Weights must be made available in binary form (i.e., the actual weight files) under the terms of BY-License v1.0. The disclosure must include sufficient documentation to enable independent verification.
+
+4. Copyleft on Modifications
+If you modify the Software (including any derivative work of the source code), you must make the source code of your modified version available under the terms of BY-License v1.0 whenever you distribute it. This requirement applies to the modified source code only; it does not require the source code of any work that merely links to the modified version to be disclosed.
+
+5. Library Use Exception
+If you use the Software in unmodified form as a library and you link it dynamically (i.e., the Software remains as a separate shared library and is not statically linked into the Linking Work), then the work that links to the Software (the "Linking Work") is not required to be licensed under BY-License v1.0, provided that:
+
+(a) the Linking Work displays a prominent notice in its user interface (or, if it has no user interface, in its documentation or at startup) stating that it uses the Software under BY-License v1.0, including a copy of or a link to the full license text, and preserves the copyright notice of the Software;
+(b) the Linking Work does not violate the restrictions set forth in Sections 3.1 (Military Use) and 3.2 (AI Training) with respect to the Software;
+(c) the Software is not modified in any way.
+
+Static linking of the Software (whether modified or unmodified) is not covered by this exception. If you statically link the Software, the Linking Work must be licensed under BY-License v1.0 in its entirety, unless the Software is modified (in which case Section 4 governs the modified source code but does not require the entire Linking Work to be licensed under this license solely because of the linking).
+
+6. Termination for Intellectual Property Claims
+If you initiate litigation against the Licensor or any person acting on the Licensor's behalf alleging that the Software or any use thereof infringes any copyright, patent, trademark, or other intellectual property right, then any rights granted to you under this License shall terminate automatically as of the date such litigation is filed. This termination does not affect the rights of any third party who received the Software from you.
+This provision does not apply to litigation that is a counterclaim in response to an action initiated by the Licensor.
+
+7. Severability
+If any provision of this license is held to be unenforceable or invalid, the remaining provisions shall continue in full force and effect. If a court finds that any provision cannot be enforced as written but could be enforced if narrowed, the provision shall be deemed modified to the minimum extent necessary to make it enforceable.
+
+8. Disclaimer of Warranty and Limitation of Liability
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
