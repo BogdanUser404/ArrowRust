@@ -1,3 +1,4 @@
+#Copyright (c) Bogdan Yachmenev (2026)
 import os
 import platform
 import sys
