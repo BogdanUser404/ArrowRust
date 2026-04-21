@@ -76,10 +76,22 @@ fn process_file(path: &Path, out: Option<String>, build: bool, lib_root: &str) {
 		.unwrap_or_else(|| format!("{}.rs", path.file_stem().unwrap().to_str().unwrap()));
 	fs::write(&out_path, final_code).unwrap();
 
-	if build {
-		Command::new("rustc").arg(&out_path).status().unwrap();
-		println!("Compiling Sucesfull");
-	}
+    if build {
+        println!("Compiling with high optimization (-O3)...");
+        let status = Command::new("rustc")
+            .arg("-C")
+            .arg("opt-level=3")
+            .arg(&out_path)
+            .status()
+            .unwrap();
+
+        if status.success() {
+            println!("Compiling Successful");
+        } else {
+            eprintln!("Compilation failed");
+        }
+    }
+
 	println!("End programm");
 }
 
